@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Аниме онлайн</title>
+</head>
+<body>
+<h1>Список аниме</h1>
+<ul>
+    {% for anime in animes %}
+        <li><a href="{{ anime.id }}/">{{ anime.title }}</a></li>
+    {% endfor %}
+</ul>
+</body>
+</html>

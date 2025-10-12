@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ anime.title }}</title>
+</head>
+<body>
+<h1>{{ anime.title }}</h1>
+<p>{{ anime.description }}</p>
+<video width="720" height="480" controls>
+    <source src="{{ anime.video.url }}" type="video/mp4">
+    Ваш браузер не поддерживает видео.
+</video>
+</body>
+</html>
