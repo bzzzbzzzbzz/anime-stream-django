@@ -38,13 +38,6 @@
             border-radius: 8px;
             background: #000;
         }
-        .debug-info {
-            background: #333;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            font-family: monospace;
-        }
         .anime-info {
             background: #2d2d2d;
             padding: 20px;
@@ -71,31 +64,16 @@
 <body>
     <div class="container">
         <a href="{% url 'anime_list' %}" class="back-button">← Назад к списку</a>
-        
-        <!-- Отладочная информация -->
-        <div class="debug-info">
-            <strong>Отладка:</strong><br>
-            Видео URL: {{ anime.video }}<br>
-            Это Google Drive: {{ is_google_drive }}<br>
-            ID видео: {% if is_google_drive %}{{ anime.video|slice:"32:65" }}{% else %}N/A{% endif %}
-        </div>
-        
+
         <div class="video-container">
             {% if anime.video %}
-                {% if is_google_drive %}
-                    <iframe 
-                        src="{{ anime.video }}" 
-                        class="video-player" 
-                        allow="autoplay; encrypted-media" 
-                        allowfullscreen
-                        frameborder="0">
-                    </iframe>
-                {% else %}
-                    <video controls class="video-player">
-                        <source src="{{ anime.video }}" type="video/mp4">
-                        Ваш браузер не поддерживает видео тег.
-                    </video>
-                {% endif %}
+                <iframe
+                    src="{{ anime.video }}"
+                    class="video-player"
+                    allow="autoplay; encrypted-media"
+                    allowfullscreen
+                    frameborder="0">
+                </iframe>
             {% else %}
                 <div class="error-message">
                     <h3>Видео недоступно</h3>
@@ -103,7 +81,7 @@
                 </div>
             {% endif %}
         </div>
-        
+
         <div class="anime-info">
             <h1 class="anime-title">{{ anime.title }}</h1>
             <div class="anime-description">{{ anime.description|linebreaks }}</div>
