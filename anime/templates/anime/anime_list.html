@@ -2,18 +2,81 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Аниме Онлайн</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Аниме стриминг</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #1a1a1a;
+            color: white;
+        }
+        .anime-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .anime-card {
+            background: #2d2d2d;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+        .anime-card:hover {
+            transform: translateY(-5px);
+        }
+        .anime-poster {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+        }
+        .anime-info {
+            padding: 15px;
+        }
+        .anime-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .anime-description {
+            font-size: 14px;
+            color: #ccc;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+    </style>
 </head>
 <body>
-<h1>Список аниме</h1>
-<ul>
-    {% for anime in animes %}
-        <li>
-            <a href="{% url 'anime_detail' anime.id %}">{{ anime.title }}</a>
-        </li>
-    {% empty %}
-        <li>Пока ничего нет</li>
-    {% endfor %}
-</ul>
+    <h1>Аниме стриминг</h1>
+    
+    <div class="anime-grid">
+        {% for anime in animes %}
+        <a href="{% url 'anime_detail' anime.pk %}">
+            <div class="anime-card">
+                {% if anime.poster %}
+                <img src="{{ anime.poster.url }}" alt="{{ anime.title }}" class="anime-poster">
+                {% else %}
+                <div class="anime-poster" style="background: #444; display: flex; align-items: center; justify-content: center;">
+                    Нет постера
+                </div>
+                {% endif %}
+                <div class="anime-info">
+                    <div class="anime-title">{{ anime.title }}</div>
+                    <div class="anime-description">{{ anime.description|truncatewords:20 }}</div>
+                </div>
+            </div>
+        </a>
+        {% empty %}
+        <p>Пока нет добавленных аниме.</p>
+        {% endfor %}
+    </div>
 </body>
 </html>

@@ -2,24 +2,112 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>{{ anime.title }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ anime.title }} - Аниме стриминг</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #1a1a1a;
+            color: white;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .back-button {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background: #e50914;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .video-container {
+            margin-bottom: 30px;
+            background: #000;
+            border-radius: 8px;
+            padding: 10px;
+        }
+        .video-player {
+            width: 100%;
+            height: 600px;
+            border: none;
+            border-radius: 8px;
+            background: #000;
+        }
+        .debug-info {
+            background: #333;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-family: monospace;
+        }
+        .anime-info {
+            background: #2d2d2d;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .anime-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .anime-description {
+            line-height: 1.6;
+            color: #ccc;
+        }
+        .error-message {
+            background: #ff4444;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-    <h1>{{ anime.title }}</h1>
-    <p>{{ anime.description }}</p>
-
-    {% if anime.get_direct_video_url %}
-        <iframe
-              src="{{ anime.get_embed_url }}"
-              width="800"
-              height="450"
-              allow="autoplay"
-              allowfullscreen>
-        </iframe>
-    {% else %}
-        <p>Видео отсутствует.</p>
-    {% endif %}
-
-    <p><a href="/">← Назад</a></p>
+    <div class="container">
+        <a href="{% url 'anime_list' %}" class="back-button">← Назад к списку</a>
+        
+        <!-- Отладочная информация -->
+        <div class="debug-info">
+            <strong>Отладка:</strong><br>
+            Видео URL: {{ anime.video }}<br>
+            Это Google Drive: {{ is_google_drive }}<br>
+            ID видео: {% if is_google_drive %}{{ anime.video|slice:"32:65" }}{% else %}N/A{% endif %}
+        </div>
+        
+        <div class="video-container">
+            {% if anime.video %}
+                {% if is_google_drive %}
+                    <iframe 
+                        src="{{ anime.video }}" 
+                        class="video-player" 
+                        allow="autoplay; encrypted-media" 
+                        allowfullscreen
+                        frameborder="0">
+                    </iframe>
+                {% else %}
+                    <video controls class="video-player">
+                        <source src="{{ anime.video }}" type="video/mp4">
+                        Ваш браузер не поддерживает видео тег.
+                    </video>
+                {% endif %}
+            {% else %}
+                <div class="error-message">
+                    <h3>Видео недоступно</h3>
+                    <p>Ссылка на видео не была добавлена для этого аниме.</p>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="anime-info">
+            <h1 class="anime-title">{{ anime.title }}</h1>
+            <div class="anime-description">{{ anime.description|linebreaks }}</div>
+        </div>
+    </div>
 </body>
 </html>

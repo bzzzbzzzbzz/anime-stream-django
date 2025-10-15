@@ -1,33 +1,17 @@
 from django.db import models
+from django.utils import timezone
+
 
 class Anime(models.Model):
-    title = models.CharField("Название", max_length=200)
-    description = models.TextField("Описание", blank=True)
-    google_drive_url = models.URLField("Ссылка на Google Диск", blank=True, null=True)
+    title = models.CharField(max_length=255, verbose_name="Название")
+    description = models.TextField(verbose_name="Описание")
+    poster = models.ImageField(upload_to='posters/', verbose_name="Постер")
+    video = models.URLField(verbose_name="Ссылка на видео", help_text="Используйте ссылку Google Drive для встраивания")
+    created_at = models.DateTimeField(default=timezone.now, verbose_name="Дата создания")
 
     def __str__(self):
         return self.title
 
-    def get_embed_url(self):
-        """
-        Возвращает корректную ссылку для встраивания видео с Google Drive.
-        Работает и для /file/d/.../view, и для uc?export=download&id=...
-        """
-        if not self.google_drive_url:
-            return None
-
-        import re
-
-        # Пробуем извлечь ID из разных форматов
-        patterns = [
-            r"/d/([^/]+)/",  # формат /file/d/ID/
-            r"id=([a-zA-Z0-9_-]+)",  # формат ?id=ID
-        ]
-
-        for pattern in patterns:
-            match = re.search(pattern, self.google_drive_url)
-            if match:
-                file_id = match.group(1)
-                return f"https://drive.google.com/file/d/{file_id}/preview"
-
-        return None
+    class Meta:
+        verbose_name = "Аниме"
+        verbose_name_plural = "Аниме"
