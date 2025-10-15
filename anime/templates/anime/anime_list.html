@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Аниме Онлайн</title>
+</head>
+<body>
+<h1>Список аниме</h1>
+<ul>
+    {% for anime in animes %}
+        <li>
+            <a href="{% url 'anime_detail' anime.id %}">{{ anime.title }}</a>
+        </li>
+    {% empty %}
+        <li>Пока ничего нет</li>
+    {% endfor %}
+</ul>
+</body>
+</html>

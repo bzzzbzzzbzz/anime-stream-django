@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ anime.title }}</title>
+</head>
+<body>
+    <h1>{{ anime.title }}</h1>
+    <p>{{ anime.description }}</p>
+
+    {% if anime.get_direct_video_url %}
+        <iframe
+              src="{{ anime.get_embed_url }}"
+              width="800"
+              height="450"
+              allow="autoplay"
+              allowfullscreen>
+        </iframe>
+    {% else %}
+        <p>Видео отсутствует.</p>
+    {% endif %}
+
+    <p><a href="/">← Назад</a></p>
+</body>
+</html>
