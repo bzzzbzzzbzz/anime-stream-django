@@ -1,91 +1,345 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ anime.title }} - Аниме стриминг</title>
+    <title>{{ anime.title }} - Обіцяний Неверленд</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>">
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        * {
             margin: 0;
-            padding: 20px;
-            background-color: #1a1a1a;
-            color: white;
+            padding: 0;
+            box-sizing: border-box;
         }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            line-height: 1.6;
+            padding-bottom: 20px;
+        }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
+            padding: 15px;
         }
+
+        /* Кнопка назад */
         .back-button {
-            display: inline-block;
-            margin-bottom: 20px;
-            padding: 10px 20px;
-            background: #e50914;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
             color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
             text-decoration: none;
-            border-radius: 5px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 14px;
         }
+
+        .back-button:hover {
+            background: rgba(229, 9, 20, 0.3);
+            transform: translateX(-5px);
+        }
+
+        /* Основний контент */
+        .anime-detail {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        /* Відео плеєр - ФІКС ДЛЯ МОБІЛЬНИХ */
+        .video-section {
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            order: 2; /* Ставимо відео після інфо на мобільних */
+        }
+
         .video-container {
-            margin-bottom: 30px;
+            position: relative;
+            width: 100%;
             background: #000;
-            border-radius: 8px;
-            padding: 10px;
         }
+
+        /* Фікс для Google Drive плеєра на мобільних */
         .video-player {
             width: 100%;
-            height: 600px;
+            height: auto;
+            min-height: 250px;
             border: none;
-            border-radius: 8px;
-            background: #000;
+            display: block;
         }
-        .anime-info {
-            background: #2d2d2d;
-            padding: 20px;
-            border-radius: 8px;
+
+        /* Спеціальні стилі для мобільних пристроїв */
+        @media (max-width: 768px) {
+            .video-player {
+                height: 300px !important; /* Фіксована висота для мобільних */
+                min-height: 300px;
+                max-height: 50vh; /* Максимум 50% висоти екрану */
+            }
         }
+
+        @media (max-width: 480px) {
+            .video-player {
+                height: 280px !important;
+                min-height: 280px;
+                max-height: 45vh;
+            }
+        }
+
+        /* Інформація про аніме */
+        .anime-info-sidebar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            order: 1; /* Ставимо інфо перед відео на мобільних */
+        }
+
+        .anime-poster-sidebar {
+            width: 100%;
+            max-width: 300px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
         .anime-title {
-            font-size: 24px;
-            font-weight: bold;
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, #e50914, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+            text-align: center;
+        }
+
+        .anime-description {
+            color: #b0b0b0;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            font-size: 15px;
+        }
+
+        .anime-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .meta-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            align-items: center;
+        }
+
+        .meta-item:last-child {
+            border-bottom: none;
+        }
+
+        .meta-label {
+            color: #b0b0b0;
+            font-size: 14px;
+        }
+
+        .meta-value {
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* Повідомлення про помилку */
+        .error-message {
+            background: linear-gradient(45deg, #e50914, #ff6b6b);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        .error-icon {
+            font-size: 2.5rem;
             margin-bottom: 15px;
         }
-        .anime-description {
-            line-height: 1.6;
-            color: #ccc;
+
+        /* Додаткові фікси для мобільних */
+        @media (min-width: 769px) {
+            .anime-detail {
+                flex-direction: row;
+                align-items: flex-start;
+            }
+
+            .video-section {
+                flex: 1;
+                order: 1;
+            }
+
+            .anime-info-sidebar {
+                flex: 0 0 350px;
+                order: 2;
+            }
+
+            .video-player {
+                height: 500px; /* Фіксована висота для десктопу */
+            }
+
+            .anime-title {
+                text-align: left;
+            }
+
+            .anime-poster-sidebar {
+                margin-left: 0;
+                margin-right: 0;
+            }
         }
-        .error-message {
-            background: #ff4444;
-            color: white;
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
+
+        /* Покращення для дуже малих екранів */
+        @media (max-width: 360px) {
+            .container {
+                padding: 10px;
+            }
+
+            .anime-info-sidebar {
+                padding: 20px 15px;
+            }
+
+            .anime-title {
+                font-size: 1.5rem;
+            }
+
+            .video-player {
+                height: 250px !important;
+                min-height: 250px;
+            }
+
+            .back-button {
+                padding: 10px 15px;
+                font-size: 13px;
+            }
+        }
+
+        /* Фікс для горизонтальної орієнтації на телефонах */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .video-player {
+                height: 70vh !important;
+                max-height: 70vh;
+            }
+
+            .container {
+                padding: 10px;
+            }
+        }
+
+        /* Покращення для планшетів */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .anime-info-sidebar {
+                flex: 0 0 300px;
+            }
+
+            .video-player {
+                height: 400px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <a href="{% url 'anime_list' %}" class="back-button">← Назад к списку</a>
+        <a href="{% url 'anime_list' %}" class="back-button">
+            ← Назад до списку
+        </a>
 
-        <div class="video-container">
-            {% if anime.video %}
-                <iframe
-                    src="{{ anime.video }}"
-                    class="video-player"
-                    allow="autoplay; encrypted-media"
-                    allowfullscreen
-                    frameborder="0">
-                </iframe>
-            {% else %}
-                <div class="error-message">
-                    <h3>Видео недоступно</h3>
-                    <p>Ссылка на видео не была добавлена для этого аниме.</p>
+        <div class="anime-detail">
+            <div class="video-section">
+                {% if anime.video %}
+                <div class="video-container">
+                    <iframe
+                        src="{{ anime.video }}"
+                        class="video-player"
+                        allow="autoplay; encrypted-media; fullscreen"
+                        allowfullscreen
+                        frameborder="0"
+                        webkitallowfullscreen
+                        mozallowfullscreen>
+                    </iframe>
                 </div>
-            {% endif %}
-        </div>
+                {% else %}
+                <div class="error-message">
+                    <div class="error-icon">❌</div>
+                    <h3>Відео недоступне</h3>
+                    <p>Посилання на відео не було додано для цього аніме</p>
+                </div>
+                {% endif %}
+            </div>
 
-        <div class="anime-info">
-            <h1 class="anime-title">{{ anime.title }}</h1>
-            <div class="anime-description">{{ anime.description|linebreaks }}</div>
+            <div class="anime-info-sidebar">
+                {% if anime.poster %}
+                <img src="{{ anime.poster.url }}" alt="{{ anime.title }}" class="anime-poster-sidebar">
+                {% endif %}
+
+                <h1 class="anime-title">{{ anime.title }}</h1>
+                <div class="anime-description">
+                    {{ anime.description|linebreaks }}
+                </div>
+
+                <div class="anime-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">Статус:</span>
+                        <span class="meta-value">✅ Доступно</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Додано:</span>
+                        <span class="meta-value">{{ anime.created_at|date:"d.m.Y" }}</span>
+                    </div>
+                    {% if 'drive.google.com' in anime.video %}
+                    <div class="meta-item">
+                        <span class="meta-label">Джерело:</span>
+                        <span class="meta-value">Google Drive</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
         </div>
     </div>
+
+    <script>
+        // Додатковий скрипт для покращення мобільного досвіду
+        document.addEventListener('DOMContentLoaded', function() {
+            const videoPlayer = document.querySelector('.video-player');
+
+            // Фікс для перемотки на мобільних
+            if (videoPlayer) {
+                videoPlayer.style.width = '100%';
+
+                // Додаткові атрибути для кращої підтримки на мобільних
+                videoPlayer.setAttribute('playsinline', '');
+                videoPlayer.setAttribute('x5-video-player-type', 'h5');
+                videoPlayer.setAttribute('x5-video-player-fullscreen', 'true');
+                videoPlayer.setAttribute('x5-video-orientation', 'landscape');
+            }
+        });
+    </script>
 </body>
 </html>
